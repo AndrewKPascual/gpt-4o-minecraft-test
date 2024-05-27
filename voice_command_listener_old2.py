@@ -8,6 +8,7 @@ import threading
 from mcrcon import MCRcon
 import speech_recognition as sr
 import whisper
+from minecraft_ai_tool import MinecraftAITool
 
 # Initialize the recognizer
 recognizer = sr.Recognizer()
@@ -23,6 +24,10 @@ listening = False
 # Function to process audio and detect trigger phrase
 def listen_for_trigger(trigger_phrase, minecraft_command):
     global listening
+    # Create an instance of MinecraftAITool
+    tool = MinecraftAITool(host="localhost", port=25575, password="your_password")
+    tool.connect_to_server()
+
     while listening:
         # Capture audio data from the microphone
         with sr.Microphone() as source:
@@ -39,9 +44,12 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
             # Check if the trigger phrase is detected
             if trigger_phrase.lower() in transcription.lower():
                 print("Trigger phrase detected! Executing command...")
-                execute_minecraft_command(minecraft_command)
+                response = tool.handle_voice_command(transcription)
+                print("Command Response:", response)
         except Exception as e:
             print("An error occurred during transcription:", str(e))
+
+    tool.disconnect_from_server()
 
 # Function to execute the Minecraft command using mcrcon
 def execute_minecraft_command(command):
