@@ -1,5 +1,7 @@
 import json
 from mcrcon import MCRcon
+from langchain import OpenAI, ConversationChain
+from langchain.memory import ConversationBufferMemory
 
 class MinecraftAITool:
     def __init__(self, host, port, password):
@@ -7,6 +9,11 @@ class MinecraftAITool:
         self.port = port
         self.password = password
         self.chat_history = []
+        self.memory = ConversationBufferMemory()
+        self.conversation = ConversationChain(
+            llm=OpenAI(temperature=0),
+            memory=self.memory,
+        )
 
     def connect_to_server(self):
         self.mcr = MCRcon(self.host, self.port, self.password)
@@ -26,13 +33,12 @@ class MinecraftAITool:
         return self.chat_history
 
     def process_voice_command(self, voice_command):
-        # Process the voice command and convert it to a Minecraft command
-        # This is a placeholder implementation and should be customized
-        # Example: If the voice command is "give me a diamond", convert it to "/give @p diamond 1"
-        if "give me a diamond" in voice_command.lower():
+        # Use langchain to process the voice command and convert it to a Minecraft command
+        response = self.conversation.predict(input=voice_command)
+        if "give me a diamond" in response.lower():
             minecraft_command = "/give @p diamond 1"
         else:
-            minecraft_command = f"/say {voice_command}"
+            minecraft_command = f"/say {response}"
         return minecraft_command
 
     def handle_voice_command(self, voice_command):
