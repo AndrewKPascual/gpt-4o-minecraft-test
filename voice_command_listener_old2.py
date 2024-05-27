@@ -7,9 +7,13 @@ from tkinter import ttk
 import threading
 from mcrcon import MCRcon
 import speech_recognition as sr
+import whisper
 
 # Initialize the recognizer
 recognizer = sr.Recognizer()
+
+# Load the Whisper model
+model = whisper.load_model("base")
 
 print("Listening for the trigger phrase...")
 
@@ -26,18 +30,18 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
             audio_data = recognizer.listen(source)
 
         try:
-            # Transcribe audio using Google Speech Recognition
-            result = recognizer.recognize_google(audio_data)
-            print("You said: " + result)
+            # Transcribe audio using Whisper
+            audio_np = np.frombuffer(audio_data.get_raw_data(), np.int16).flatten().astype(np.float32) / 32768.0
+            result = model.transcribe(audio_np)
+            transcription = result["text"]
+            print("You said: " + transcription)
 
             # Check if the trigger phrase is detected
-            if trigger_phrase.lower() in result.lower():
+            if trigger_phrase.lower() in transcription.lower():
                 print("Trigger phrase detected! Executing command...")
                 execute_minecraft_command(minecraft_command)
-        except sr.UnknownValueError:
-            print("Google Speech Recognition could not understand audio")
-        except sr.RequestError as e:
-            print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        except Exception as e:
+            print("An error occurred during transcription:", str(e))
 
 # Function to execute the Minecraft command using mcrcon
 def execute_minecraft_command(command):
