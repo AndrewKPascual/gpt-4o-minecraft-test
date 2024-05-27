@@ -28,7 +28,11 @@ class MinecraftAITool:
     def process_voice_command(self, voice_command):
         # Process the voice command and convert it to a Minecraft command
         # This is a placeholder implementation and should be customized
-        minecraft_command = f"/say {voice_command}"
+        # Example: If the voice command is "give me a diamond", convert it to "/give @p diamond 1"
+        if "give me a diamond" in voice_command.lower():
+            minecraft_command = "/give @p diamond 1"
+        else:
+            minecraft_command = f"/say {voice_command}"
         return minecraft_command
 
     def handle_voice_command(self, voice_command):
@@ -48,6 +52,6 @@ class MinecraftAITool:
 if __name__ == "__main__":
     tool = MinecraftAITool(host="localhost", port=25575, password="your_password")
     tool.connect_to_server()
-    response = tool.handle_voice_command("Hello, Minecraft!")
+    response = tool.handle_voice_command("give me a diamond")
     print("Server response:", response)
     tool.disconnect_from_server()
