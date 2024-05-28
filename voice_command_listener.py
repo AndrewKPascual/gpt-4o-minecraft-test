@@ -1,4 +1,3 @@
-from langchain_core import LangChain
 import sounddevice as sd
 import numpy as np
 import subprocess
@@ -13,6 +12,7 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import tool
 from langchain_core.runnables import RunnableLambda
+from langchain.chains import SimpleChain
 
 # Global variable to store chat message history
 store = {}
@@ -41,8 +41,24 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
 
     # Define a Runnable to process the transcribed text
     def process_transcribed_text(text):
-        # Process the transcribed text with LangChain
-        langchain_response = LangChain.process(text)
+        # Define the logic for processing the transcribed text using a language model
+        def langchain_logic(input_text):
+            try:
+                # Replace this with actual LangChain processing logic
+                # For example, using a SimpleChain to process the input text
+                prompt_template = ChatPromptTemplate.from_template("You are a helpful assistant. Respond to the following input: {input_text}")
+                chain = SimpleChain(prompt_template=prompt_template)
+                response = chain.run(input_text)
+                return response
+            except Exception as e:
+                print("An error occurred during LangChain processing:", str(e))
+                return ""
+
+        # Create a RunnableLambda for the LangChain logic
+        langchain_runnable = RunnableLambda(langchain_logic)
+
+        # Process the transcribed text with the LangChain runnable
+        langchain_response = langchain_runnable.invoke(text)
         print("LangChain response: " + langchain_response)
 
         # Check if the trigger phrase is detected
@@ -171,8 +187,24 @@ def test_integration_with_simulated_input():
 
     # Define a Runnable to process the transcribed text
     def process_transcribed_text(text):
-        # Process the transcribed text with LangChain
-        langchain_response = LangChain.process(text)
+        # Define the logic for processing the transcribed text using a language model
+        def langchain_logic(input_text):
+            try:
+                # Replace this with actual LangChain processing logic
+                # For example, using a SimpleChain to process the input text
+                prompt_template = ChatPromptTemplate.from_template("You are a helpful assistant. Respond to the following input: {input_text}")
+                chain = SimpleChain(prompt_template=prompt_template)
+                response = chain.run(input_text)
+                return response
+            except Exception as e:
+                print("An error occurred during LangChain processing:", str(e))
+                return ""
+
+        # Create a RunnableLambda for the LangChain logic
+        langchain_runnable = RunnableLambda(langchain_logic)
+
+        # Process the transcribed text with the LangChain runnable
+        langchain_response = langchain_runnable.invoke(text)
         print("LangChain response: " + langchain_response)
 
         # Check if the trigger phrase is detected
