@@ -10,6 +10,7 @@ import whisper
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.tools import tool
 
 # Initialize the Whisper model
 model = whisper.load_model("base")
@@ -35,10 +36,14 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
         # Check if the trigger phrase is detected
         if trigger_phrase.lower() in langchain_response.lower():
             print("Trigger phrase detected! Executing command...")
-            execute_minecraft_command(minecraft_command)
+            response = minecraft_command_tool(minecraft_command)
+            print("Command Response:", response)
+
+    # Convert the function into a Runnable object
+    runnable = RunnableLambda(process_transcribed_text)
 
     # Wrap the Runnable with RunnableWithMessageHistory
-    runnable_with_history = RunnableWithMessageHistory(process_transcribed_text, chat_history)
+    runnable_with_history = RunnableWithMessageHistory(runnable, chat_history)
 
     while listening:
         # Capture audio data from the microphone
@@ -71,6 +76,21 @@ def execute_minecraft_command(command):
         print("Connection to the Minecraft server was refused. Please ensure the server is running and accessible.")
     except Exception as e:
         print("An error occurred while executing the command:", str(e))
+
+# Define a custom tool to execute Minecraft commands
+@tool
+def minecraft_command_tool(command: str) -> str:
+    """
+    Executes a Minecraft command using mcrcon and returns the response.
+    """
+    try:
+        with MCRcon("localhost", "Throwawaypassword-1", port=25575) as mcr:
+            response = mcr.command(command)
+            return response
+    except ConnectionRefusedError:
+        return "Connection to the Minecraft server was refused. Please ensure the server is running and accessible."
+    except Exception as e:
+        return f"An error occurred while executing the command: {str(e)}"
 
 # Function to start the listener
 def start_listener():
