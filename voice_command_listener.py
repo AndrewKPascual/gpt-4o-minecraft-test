@@ -44,10 +44,20 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
         # Define the logic for processing the transcribed text using a language model
         def langchain_logic(input_text):
             try:
-                # Replace this with actual LangChain processing logic
-                # Using RunnableSequence to process the input text
+                # Define a prompt template
                 prompt_template = ChatPromptTemplate.from_template("You are a helpful assistant. Respond to the following input: {input_text}")
-                runnable_sequence = RunnableSequence([prompt_template])
+
+                # Simulate LLM processing step using RunnableLambda
+                def simulate_llm_processing(text):
+                    # Simulate a response from the LLM
+                    return f"Simulated LLM response to: {text}"
+
+                llm_runnable = RunnableLambda(simulate_llm_processing)
+
+                # Create a RunnableSequence with the prompt template and LLM runnable
+                runnable_sequence = RunnableSequence([prompt_template, llm_runnable])
+
+                # Process the input text using the RunnableSequence
                 response = runnable_sequence.invoke(input_text)
                 return response
             except Exception as e:
