@@ -128,8 +128,34 @@ stop_button.grid(column=1, row=3, padx=10, pady=10)
 test_button = ttk.Button(root, text="Test Command Execution", command=test_minecraft_command_execution)
 test_button.grid(column=0, row=4, columnspan=2, padx=10, pady=10)
 
+# Function to test the integration with simulated input
+def test_integration_with_simulated_input():
+    trigger_phrase = "execute command"
+    minecraft_command = "/give @p diamond 1"
+    simulated_transcribed_text = "execute command to give diamond"
+
+    # Initialize ChatMessageHistory
+    chat_history = ChatMessageHistory()
+
+    # Define a Runnable to process the transcribed text
+    def process_transcribed_text(text):
+        # Process the transcribed text with LangChain
+        langchain_response = LangChain.process(text)
+        print("LangChain response: " + langchain_response)
+
+        # Check if the trigger phrase is detected
+        if trigger_phrase.lower() in langchain_response.lower():
+            print("Trigger phrase detected! Executing command...")
+            execute_minecraft_command(minecraft_command)
+
+    # Wrap the Runnable with RunnableWithMessageHistory
+    runnable_with_history = RunnableWithMessageHistory(process_transcribed_text, chat_history)
+
+    # Simulate the processing of the transcribed text
+    runnable_with_history(simulated_transcribed_text)
+
 # Directly call the test function on startup to bypass the GUI for testing
-test_minecraft_command_execution()
+test_integration_with_simulated_input()
 
 # Start the Tkinter event loop
 root.mainloop()
