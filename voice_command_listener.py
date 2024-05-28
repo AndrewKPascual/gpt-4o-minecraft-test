@@ -119,11 +119,15 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
 
             # Process the transcribed text with the RunnableWithMessageHistory
             print(f"Invoking RunnableWithMessageHistory with text: {result['text']} and config: {{'configurable': {{'session_id': 'default_session'}}}}", flush=True)
+            kwargs = {"additional_info": "example_value"}  # Example additional keyword arguments
             try:
-                response = runnable_with_history.invoke(result['text'], config={"configurable": {"session_id": "default_session"}})
+                print(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None, Additional kwargs: {kwargs}", flush=True)
+                response = runnable_with_history.invoke(result['text'], config={"configurable": {"session_id": "default_session"}}, **kwargs)
                 print(f"RunnableWithMessageHistory response: {response}", flush=True)
             except Exception as e:
                 print("An error occurred during RunnableWithMessageHistory invocation:", str(e), flush=True)
+                print(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None", flush=True)
+                print(f"Additional kwargs: {kwargs}", flush=True)
         except Exception as e:
             print("An error occurred during transcription or LangChain processing:", str(e))
 
