@@ -1,3 +1,4 @@
+from langchain_core import LangChain
 import sounddevice as sd
 import numpy as np
 import subprocess
