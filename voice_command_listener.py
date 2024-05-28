@@ -125,6 +125,7 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                 print(f"RunnableWithMessageHistory response: {response}", flush=True)
             except ValueError as ve:
                 import traceback
+                print("Caught a ValueError. Preparing to log it.", flush=True)
                 try:
                     with open("/home/ubuntu/gpt-4o-minecraft-test/error_log.txt", "a") as log_file:
                         log_file.write("A ValueError occurred during RunnableWithMessageHistory invocation:\n")
@@ -135,8 +136,10 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                     print("Logged ValueError to error_log.txt", flush=True)
                 except Exception as log_error:
                     print("Failed to log ValueError:", str(log_error), flush=True)
+                print("Finished handling ValueError.", flush=True)
             except Exception as e:
                 import traceback
+                print("Caught a general exception. Preparing to log it.", flush=True)
                 try:
                     with open("/home/ubuntu/gpt-4o-minecraft-test/error_log.txt", "a") as log_file:
                         log_file.write("An error occurred during RunnableWithMessageHistory invocation:\n")
@@ -147,6 +150,7 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                     print("Logged general error to error_log.txt", flush=True)
                 except Exception as log_error:
                     print("Failed to log general error:", str(log_error), flush=True)
+                print("Finished handling general exception.", flush=True)
         except Exception as e:
             print("An error occurred during transcription or LangChain processing:", str(e))
 
