@@ -6,10 +6,10 @@ import tkinter as tk
 from tkinter import ttk
 import threading
 from mcrcon import MCRcon
-import speech_recognition as sr
+import whisper
 
-# Initialize the recognizer
-recognizer = sr.Recognizer()
+# Initialize the Whisper model
+model = whisper.load_model("base")
 
 print("Listening for the trigger phrase...")
 
@@ -21,30 +21,35 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
     global listening
     while listening:
         # Capture audio data from the microphone
-        with sr.Microphone() as source:
-            print("Microphone is ready. Listening...")
-            audio_data = recognizer.listen(source)
+        print("Microphone is ready. Listening...")
+        audio_data = sd.rec(int(16000 * 5), samplerate=16000, channels=1, dtype='int16')
+        sd.wait()
 
         try:
-            # Transcribe audio using Google Speech Recognition
-            result = recognizer.recognize_google(audio_data)
-            print("You said: " + result)
+            # Convert audio data to float32
+            audio_data = audio_data.astype(np.float32) / 32768.0
+
+            # Transcribe audio using Whisper
+            result = model.transcribe(np.squeeze(audio_data))
+            print("You said: " + result['text'])
 
             # Check if the trigger phrase is detected
-            if trigger_phrase.lower() in result.lower():
+            if trigger_phrase.lower() in result['text'].lower():
                 print("Trigger phrase detected! Executing command...")
                 execute_minecraft_command(minecraft_command)
-        except sr.UnknownValueError:
-            print("Google Speech Recognition could not understand audio")
-        except sr.RequestError as e:
-            print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        except Exception as e:
+            print("An error occurred during transcription:", str(e))
 
 # Function to execute the Minecraft command using mcrcon
 def execute_minecraft_command(command):
     try:
+        # Check if the Minecraft server is accessible
         with MCRcon("localhost", "Throwawaypassword-1", port=25575) as mcr:
+            print("Successfully connected to the Minecraft server.")
             response = mcr.command(command)
             print("Command Response:", response)
+    except ConnectionRefusedError:
+        print("Connection to the Minecraft server was refused. Please ensure the server is running and accessible.")
     except Exception as e:
         print("An error occurred while executing the command:", str(e))
 
@@ -64,6 +69,15 @@ def stop_listener():
     global listening
     listening = False
     print("Stopped listening.")
+
+# Commenting out the default microphone information print statement
+# print("Default microphone info:", sd.query_devices(kind='input'))
+
+# Function to test Minecraft command execution
+def test_minecraft_command_execution():
+    test_command = "time set day"
+    print("Testing Minecraft command execution with command:", test_command)
+    execute_minecraft_command(test_command)
 
 # Create the main window
 root = tk.Tk()
@@ -90,6 +104,13 @@ start_button.grid(column=0, row=3, padx=10, pady=10)
 
 stop_button = ttk.Button(root, text="Stop Listening", command=stop_listener)
 stop_button.grid(column=1, row=3, padx=10, pady=10)
+
+# Add a button to test Minecraft command execution
+test_button = ttk.Button(root, text="Test Command Execution", command=test_minecraft_command_execution)
+test_button.grid(column=0, row=4, columnspan=2, padx=10, pady=10)
+
+# Directly call the test function on startup to bypass the GUI for testing
+test_minecraft_command_execution()
 
 # Start the Tkinter event loop
 root.mainloop()
