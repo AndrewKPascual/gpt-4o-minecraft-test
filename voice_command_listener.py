@@ -116,6 +116,7 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
             print("You said: " + result['text'])
 
             # Process the transcribed text with the RunnableWithMessageHistory
+            print(f"Invoking RunnableWithMessageHistory with text: {result['text']} and config: {{'configurable': {{'session_id': 'default_session'}}}}")
             runnable_with_history.invoke(result['text'], config={"configurable": {"session_id": "default_session"}})
         except Exception as e:
             print("An error occurred during transcription or LangChain processing:", str(e))
@@ -218,25 +219,39 @@ def test_integration_with_simulated_input():
         # Define the logic for processing the transcribed text using a language model
         def langchain_logic(input_text):
             try:
-                # Replace this with actual LangChain processing logic
-                # For example, using a SimpleChain to process the input text
-                prompt_template = ChatPromptTemplate.from_template("You are a helpful assistant. Respond to the following input: {input_text}")
-                chain = LLMChain(prompt_template=prompt_template)
-                response = chain.run(input_text)
+                # Simulate LLM processing step using RunnableLambda
+                def simulate_llm_processing(text):
+                    # Simulate a response from the LLM
+                    return {"message": f"Simulated LLM response to: {text}"}
+
+                llm_runnable = RunnableLambda(simulate_llm_processing)
+
+                # Define a second RunnableLambda to log the response
+                def log_response(response):
+                    print(f"Logging response: {response['message']}")
+                    return response
+
+                log_runnable = RunnableLambda(log_response)
+
+                # Create a RunnableSequence with the LLM runnable and the log runnable
+                runnable_sequence = RunnableSequence(llm_runnable, log_runnable)
+
+                # Process the input text using the RunnableSequence
+                response = runnable_sequence.invoke(input_text)
                 return response
             except Exception as e:
                 print("An error occurred during LangChain processing:", str(e))
-                return ""
+                return {"message": ""}
 
         # Create a RunnableLambda for the LangChain logic
         langchain_runnable = RunnableLambda(langchain_logic)
 
         # Process the transcribed text with the LangChain runnable
         langchain_response = langchain_runnable.invoke(text)
-        print("LangChain response: " + langchain_response)
+        print("LangChain response: " + langchain_response['message'])
 
         # Check if the trigger phrase is detected
-        if trigger_phrase.lower() in langchain_response.lower():
+        if trigger_phrase.lower() in langchain_response['message'].lower():
             print("Trigger phrase detected! Executing command...")
             execute_minecraft_command(minecraft_command)
 
@@ -248,6 +263,7 @@ def test_integration_with_simulated_input():
     runnable_with_history = RunnableWithMessageHistory(runnable, get_session_history=get_session_history)
 
     # Simulate the processing of the transcribed text
+    print(f"Invoking RunnableWithMessageHistory with text: {simulated_transcribed_text} and config: {{'configurable': {{'session_id': 'default_session'}}}}")
     runnable_with_history.invoke(simulated_transcribed_text, config={"configurable": {"session_id": "default_session"}})
 
 # Directly call the test function on startup to bypass the GUI for testing
