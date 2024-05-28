@@ -1,2 +1,4 @@
 2024-05-28 18:54:22,489 - DEBUG - Parent run 911b30d9-5dd3-401b-b750-4d509742bc6f not found for run 2fd54a1f-f540-4b70-90e6-a64ddea60c64. Treating as a root run.
 2024-05-28 18:54:22,551 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
+2024-05-28 19:14:40,401 - DEBUG - Parent run e46cc31c-762b-4d5d-8f93-08265d30ae61 not found for run 2a66f030-6295-4faf-ad82-9724b4230c55. Treating as a root run.
+2024-05-28 19:14:40,489 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
