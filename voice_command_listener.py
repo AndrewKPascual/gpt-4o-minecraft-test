@@ -11,6 +11,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import tool
+from langchain_core.runnables import RunnableLambda
 
 # Initialize the Whisper model
 model = whisper.load_model("base")
@@ -168,8 +169,11 @@ def test_integration_with_simulated_input():
             print("Trigger phrase detected! Executing command...")
             execute_minecraft_command(minecraft_command)
 
+    # Convert the function into a Runnable object
+    runnable = RunnableLambda(process_transcribed_text)
+
     # Wrap the Runnable with RunnableWithMessageHistory
-    runnable_with_history = RunnableWithMessageHistory(process_transcribed_text, chat_history)
+    runnable_with_history = RunnableWithMessageHistory(runnable, chat_history)
 
     # Simulate the processing of the transcribed text
     runnable_with_history(simulated_transcribed_text)
