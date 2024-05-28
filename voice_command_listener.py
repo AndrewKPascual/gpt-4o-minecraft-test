@@ -49,27 +49,14 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
         def langchain_logic(input_text):
             try:
                 print(f"LangChain logic input: {input_text}", flush=True)
-                # Simulate LLM processing step using RunnableLambda
-                def simulate_llm_processing(text):
-                    # Simulate a response from the LLM
-                    return {"message": f"Simulated LLM response to: {text}"}
-
-                llm_runnable = RunnableLambda(simulate_llm_processing)
-
-                # Define a second RunnableLambda to log the response
-                def log_response(response):
-                    print(f"Logging response: {response['message']}", flush=True)
-                    return response
-
-                log_runnable = RunnableLambda(log_response)
-
-                # Create a RunnableSequence with the LLM runnable and the log runnable
-                runnable_sequence = RunnableSequence(llm_runnable, log_runnable)
-
-                # Process the input text using the RunnableSequence
-                response = runnable_sequence.invoke(input_text)
+                # Use a language model to process the input text and generate a response
+                # Replace the placeholder logic with actual logic to process the input text
+                # For example, use an LLMChain to process the input text and generate a response
+                prompt_template = ChatPromptTemplate.from_template("You are a helpful assistant. Respond to the following input: {input_text}")
+                llm_chain = LLMChain(prompt_template=prompt_template)
+                response = llm_chain.run(input_text)
                 print(f"LangChain logic output: {response}", flush=True)
-                return response
+                return {"message": response}
             except Exception as e:
                 print("An error occurred during LangChain processing:", str(e), flush=True)
                 return {"message": ""}
@@ -134,6 +121,7 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                 logging.error("Traceback:\n" + traceback.format_exc())
                 logging.error(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None")
                 logging.error(f"Additional kwargs: {kwargs}")
+                logging.error(f"Configuration: {config}")
                 print("Logged ValueError to debug.log", flush=True)
             except Exception as e:
                 import traceback
