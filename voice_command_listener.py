@@ -12,7 +12,7 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import tool
 from langchain_core.runnables import RunnableLambda
-from langchain.chains import LLMChain
+from langchain_core.runnables import RunnableSequence
 
 # Global variable to store chat message history
 store = {}
@@ -45,10 +45,10 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
         def langchain_logic(input_text):
             try:
                 # Replace this with actual LangChain processing logic
-                # For example, using a SimpleChain to process the input text
+                # Using RunnableSequence to process the input text
                 prompt_template = ChatPromptTemplate.from_template("You are a helpful assistant. Respond to the following input: {input_text}")
-                chain = LLMChain(prompt_template=prompt_template)
-                response = chain.run(input_text)
+                runnable_sequence = RunnableSequence([prompt_template])
+                response = runnable_sequence.invoke(input_text)
                 return response
             except Exception as e:
                 print("An error occurred during LangChain processing:", str(e))
