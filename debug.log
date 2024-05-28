@@ -16,3 +16,5 @@
 2024-05-28 20:34:27,047 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
 2024-05-28 20:42:08,894 - DEBUG - Parent run 13c0bff8-8eb1-4cec-9454-8572514b193d not found for run 056865ce-2163-4b62-8c65-99a95b04e7d8. Treating as a root run.
 2024-05-28 20:42:08,931 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
+2024-05-28 21:10:00,192 - DEBUG - Parent run 0c2b5a10-aa11-4a9c-9dd2-6f49f2a40155 not found for run f413507e-94ef-4384-9d62-3e4ef0c718f4. Treating as a root run.
+2024-05-28 21:10:00,259 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
