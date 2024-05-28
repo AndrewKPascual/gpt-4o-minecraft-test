@@ -13,6 +13,10 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import tool
 from langchain_core.runnables import RunnableLambda
 from langchain_core.runnables import RunnableSequence
+import logging
+
+# Configure logging to write to a debug.log file
+logging.basicConfig(filename='/home/ubuntu/gpt-4o-minecraft-test/debug.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Global variable to store chat message history
 store = {}
@@ -125,22 +129,20 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                 print(f"RunnableWithMessageHistory response: {response}", flush=True)
             except ValueError as ve:
                 import traceback
-                with open("/home/ubuntu/gpt-4o-minecraft-test/error_log.txt", "a") as log_file:
-                    log_file.write("A ValueError occurred during RunnableWithMessageHistory invocation:\n")
-                    log_file.write(str(ve) + "\n")
-                    log_file.write("Traceback:\n" + traceback.format_exc() + "\n")
-                    log_file.write(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None\n")
-                    log_file.write(f"Additional kwargs: {kwargs}\n")
-                print("Logged ValueError to error_log.txt", flush=True)
+                logging.error("A ValueError occurred during RunnableWithMessageHistory invocation:")
+                logging.error(str(ve))
+                logging.error("Traceback:\n" + traceback.format_exc())
+                logging.error(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None")
+                logging.error(f"Additional kwargs: {kwargs}")
+                print("Logged ValueError to debug.log", flush=True)
             except Exception as e:
                 import traceback
-                with open("/home/ubuntu/gpt-4o-minecraft-test/error_log.txt", "a") as log_file:
-                    log_file.write("An error occurred during RunnableWithMessageHistory invocation:\n")
-                    log_file.write(str(e) + "\n")
-                    log_file.write("Traceback:\n" + traceback.format_exc() + "\n")
-                    log_file.write(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None\n")
-                    log_file.write(f"Additional kwargs: {kwargs}\n")
-                print("Logged general error to error_log.txt", flush=True)
+                logging.error("An error occurred during RunnableWithMessageHistory invocation:")
+                logging.error(str(e))
+                logging.error("Traceback:\n" + traceback.format_exc())
+                logging.error(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None")
+                logging.error(f"Additional kwargs: {kwargs}")
+                print("Logged general error to debug.log", flush=True)
         except Exception as e:
             print("An error occurred during transcription or LangChain processing:", str(e))
 
