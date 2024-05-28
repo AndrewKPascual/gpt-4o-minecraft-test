@@ -13,6 +13,16 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import tool
 from langchain_core.runnables import RunnableLambda
 
+# Global variable to store chat message history
+store = {}
+
+# Function to get or create a chat message history based on session_id
+def get_session_history(session_id: str) -> ChatMessageHistory:
+    # For simplicity, we use an in-memory implementation
+    if session_id not in store:
+        store[session_id] = ChatMessageHistory()
+    return store[session_id]
+
 # Initialize the Whisper model
 model = whisper.load_model("base")
 
@@ -44,7 +54,7 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
     runnable = RunnableLambda(process_transcribed_text)
 
     # Wrap the Runnable with RunnableWithMessageHistory
-    runnable_with_history = RunnableWithMessageHistory(runnable, chat_history)
+    runnable_with_history = RunnableWithMessageHistory(runnable, get_session_history=get_session_history)
 
     while listening:
         # Capture audio data from the microphone
@@ -61,7 +71,7 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
             print("You said: " + result['text'])
 
             # Process the transcribed text with the RunnableWithMessageHistory
-            runnable_with_history(result['text'])
+            runnable_with_history.invoke(result['text'], config={"configurable": {"session_id": "default_session"}})
         except Exception as e:
             print("An error occurred during transcription or LangChain processing:", str(e))
 
@@ -173,10 +183,10 @@ def test_integration_with_simulated_input():
     runnable = RunnableLambda(process_transcribed_text)
 
     # Wrap the Runnable with RunnableWithMessageHistory
-    runnable_with_history = RunnableWithMessageHistory(runnable, chat_history)
+    runnable_with_history = RunnableWithMessageHistory(runnable, get_session_history=get_session_history)
 
     # Simulate the processing of the transcribed text
-    runnable_with_history(simulated_transcribed_text)
+    runnable_with_history.invoke(simulated_transcribed_text)
 
 # Directly call the test function on startup to bypass the GUI for testing
 test_integration_with_simulated_input()
