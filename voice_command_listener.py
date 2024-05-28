@@ -125,10 +125,12 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                 print(f"RunnableWithMessageHistory response: {response}", flush=True)
             except Exception as e:
                 import traceback
-                print("An error occurred during RunnableWithMessageHistory invocation:", str(e), flush=True)
-                print("Traceback:", traceback.format_exc(), flush=True)
-                print(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None", flush=True)
-                print(f"Additional kwargs: {kwargs}", flush=True)
+                with open("error_log.txt", "a") as log_file:
+                    log_file.write("An error occurred during RunnableWithMessageHistory invocation:\n")
+                    log_file.write(str(e) + "\n")
+                    log_file.write("Traceback:\n" + traceback.format_exc() + "\n")
+                    log_file.write(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None\n")
+                    log_file.write(f"Additional kwargs: {kwargs}\n")
         except Exception as e:
             print("An error occurred during transcription or LangChain processing:", str(e))
 
