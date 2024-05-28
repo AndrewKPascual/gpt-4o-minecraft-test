@@ -12,7 +12,7 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.tools import tool
 from langchain_core.runnables import RunnableLambda
-from langchain.chains import SimpleChain
+from langchain.chains import LLMChain
 
 # Global variable to store chat message history
 store = {}
@@ -47,7 +47,7 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                 # Replace this with actual LangChain processing logic
                 # For example, using a SimpleChain to process the input text
                 prompt_template = ChatPromptTemplate.from_template("You are a helpful assistant. Respond to the following input: {input_text}")
-                chain = SimpleChain(prompt_template=prompt_template)
+                chain = LLMChain(prompt_template=prompt_template)
                 response = chain.run(input_text)
                 return response
             except Exception as e:
@@ -193,7 +193,7 @@ def test_integration_with_simulated_input():
                 # Replace this with actual LangChain processing logic
                 # For example, using a SimpleChain to process the input text
                 prompt_template = ChatPromptTemplate.from_template("You are a helpful assistant. Respond to the following input: {input_text}")
-                chain = SimpleChain(prompt_template=prompt_template)
+                chain = LLMChain(prompt_template=prompt_template)
                 response = chain.run(input_text)
                 return response
             except Exception as e:
