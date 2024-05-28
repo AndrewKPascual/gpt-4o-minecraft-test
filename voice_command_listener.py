@@ -186,7 +186,7 @@ def test_integration_with_simulated_input():
     runnable_with_history = RunnableWithMessageHistory(runnable, get_session_history=get_session_history)
 
     # Simulate the processing of the transcribed text
-    runnable_with_history.invoke(simulated_transcribed_text)
+    runnable_with_history.invoke(simulated_transcribed_text, config={"configurable": {"session_id": "default_session"}})
 
 # Directly call the test function on startup to bypass the GUI for testing
 test_integration_with_simulated_input()
