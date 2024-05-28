@@ -52,7 +52,7 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                 llm_runnable = RunnableLambda(simulate_llm_processing)
 
                 # Create a RunnableSequence with the LLM runnable
-                runnable_sequence = RunnableSequence(llm_runnable)
+                runnable_sequence = RunnableSequence(runnables=[llm_runnable])
 
                 # Process the input text using the RunnableSequence
                 response = runnable_sequence.invoke(input_text)
@@ -231,7 +231,7 @@ def test_integration_with_simulated_input():
                 llm_runnable = RunnableLambda(simulate_llm_processing)
 
                 # Create a RunnableSequence with the LLM runnable
-                runnable_sequence = RunnableSequence([llm_runnable])
+                runnable_sequence = RunnableSequence(llm_runnable)
 
                 # Process the input text using the RunnableSequence
                 response = runnable_sequence.invoke(input_text)
