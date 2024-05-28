@@ -7,10 +7,9 @@ from tkinter import ttk
 import threading
 from mcrcon import MCRcon
 import whisper
-from langchain import LangChain
-from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.memory import ChatMessageHistory
+from langchain_core.runnables.history import RunnableWithMessageHistory
 
 # Initialize the Whisper model
 model = whisper.load_model("base")
