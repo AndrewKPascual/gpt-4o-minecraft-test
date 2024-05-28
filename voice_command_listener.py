@@ -125,22 +125,28 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                 print(f"RunnableWithMessageHistory response: {response}", flush=True)
             except ValueError as ve:
                 import traceback
-                with open("/home/ubuntu/gpt-4o-minecraft-test/error_log.txt", "a") as log_file:
-                    log_file.write("A ValueError occurred during RunnableWithMessageHistory invocation:\n")
-                    log_file.write(str(ve) + "\n")
-                    log_file.write("Traceback:\n" + traceback.format_exc() + "\n")
-                    log_file.write(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None\n")
-                    log_file.write(f"Additional kwargs: {kwargs}\n")
-                print("Logged ValueError to error_log.txt", flush=True)
+                try:
+                    with open("/home/ubuntu/gpt-4o-minecraft-test/error_log.txt", "a") as log_file:
+                        log_file.write("A ValueError occurred during RunnableWithMessageHistory invocation:\n")
+                        log_file.write(str(ve) + "\n")
+                        log_file.write("Traceback:\n" + traceback.format_exc() + "\n")
+                        log_file.write(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None\n")
+                        log_file.write(f"Additional kwargs: {kwargs}\n")
+                    print("Logged ValueError to error_log.txt", flush=True)
+                except Exception as log_error:
+                    print("Failed to log ValueError:", str(log_error), flush=True)
             except Exception as e:
                 import traceback
-                with open("/home/ubuntu/gpt-4o-minecraft-test/error_log.txt", "a") as log_file:
-                    log_file.write("An error occurred during RunnableWithMessageHistory invocation:\n")
-                    log_file.write(str(e) + "\n")
-                    log_file.write("Traceback:\n" + traceback.format_exc() + "\n")
-                    log_file.write(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None\n")
-                    log_file.write(f"Additional kwargs: {kwargs}\n")
-                print("Logged general error to error_log.txt", flush=True)
+                try:
+                    with open("/home/ubuntu/gpt-4o-minecraft-test/error_log.txt", "a") as log_file:
+                        log_file.write("An error occurred during RunnableWithMessageHistory invocation:\n")
+                        log_file.write(str(e) + "\n")
+                        log_file.write("Traceback:\n" + traceback.format_exc() + "\n")
+                        log_file.write(f"Outputs: {result['text']}, Run ID: default_session, Inputs: None\n")
+                        log_file.write(f"Additional kwargs: {kwargs}\n")
+                    print("Logged general error to error_log.txt", flush=True)
+                except Exception as log_error:
+                    print("Failed to log general error:", str(log_error), flush=True)
         except Exception as e:
             print("An error occurred during transcription or LangChain processing:", str(e))
 
