@@ -47,25 +47,36 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                 # Simulate LLM processing step using RunnableLambda
                 def simulate_llm_processing(text):
                     # Simulate a response from the LLM
-                    return f"Simulated LLM response to: {text}"
+                    return {"message": f"Simulated LLM response to: {text}"}
 
                 llm_runnable = RunnableLambda(simulate_llm_processing)
 
                 # Define a second RunnableLambda to log the response
                 def log_response(response):
-                    print(f"Logging response: {response}")
+                    print(f"Logging response: {response['message']}")
                     return response
 
                 log_runnable = RunnableLambda(log_response)
 
                 # Create a RunnableSequence with the LLM runnable and the log runnable
-                runnable_sequence = RunnableSequence(runnables=[llm_runnable, log_runnable])
+                runnable_sequence = RunnableSequence(llm_runnable, log_runnable)
 
                 # Process the input text using the RunnableSequence
                 response = runnable_sequence.invoke(input_text)
                 return response
             except Exception as e:
                 print("An error occurred during LangChain processing:", str(e))
+                return {"message": ""}
+
+        # Function to determine the appropriate Minecraft command based on the transcribed text
+        def determine_minecraft_command(transcribed_text):
+            # Example logic to determine the command based on keywords in the transcribed text
+            if "give diamond" in transcribed_text.lower():
+                return "/give @p diamond 1"
+            elif "set time day" in transcribed_text.lower():
+                return "time set day"
+            # Add more conditions as needed
+            else:
                 return ""
 
         # Create a RunnableLambda for the LangChain logic
@@ -73,10 +84,13 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
 
         # Process the transcribed text with the LangChain runnable
         langchain_response = langchain_runnable.invoke(text)
-        print("LangChain response: " + langchain_response)
+        print("LangChain response: " + langchain_response['message'])
+
+        # Determine the appropriate Minecraft command based on the transcribed text
+        minecraft_command = determine_minecraft_command(langchain_response['message'])
 
         # Check if the trigger phrase is detected
-        if trigger_phrase.lower() in langchain_response.lower():
+        if trigger_phrase.lower() in langchain_response['message'].lower():
             print("Trigger phrase detected! Executing command...")
             response = minecraft_command_tool(minecraft_command)
             print("Command Response:", response)
@@ -226,45 +240,6 @@ def test_integration_with_simulated_input():
             print("Trigger phrase detected! Executing command...")
             execute_minecraft_command(minecraft_command)
 
-    def process_transcribed_text(text):
-        # Define the logic for processing the transcribed text using a language model
-        def langchain_logic(input_text):
-            try:
-                # Simulate LLM processing step using RunnableLambda
-                def simulate_llm_processing(text):
-                    # Simulate a response from the LLM
-                    return f"Simulated LLM response to: {text}"
-
-                llm_runnable = RunnableLambda(simulate_llm_processing)
-
-                # Define a second RunnableLambda to log the response
-                def log_response(response):
-                    print(f"Logging response: {response}")
-                    return response
-
-                log_runnable = RunnableLambda(log_response)
-
-                # Create a RunnableSequence with the LLM runnable and the log runnable
-                runnable_sequence = RunnableSequence(runnables=[llm_runnable, log_runnable])
-
-                # Process the input text using the RunnableSequence
-                response = runnable_sequence.invoke(input_text)
-                return response
-            except Exception as e:
-                print("An error occurred during LangChain processing:", str(e))
-                return ""
-
-        # Create a RunnableLambda for the LangChain logic
-        langchain_runnable = RunnableLambda(langchain_logic)
-
-        # Process the transcribed text with the LangChain runnable
-        langchain_response = langchain_runnable.invoke(text)
-        print("LangChain response: " + langchain_response)
-
-        # Check if the trigger phrase is detected
-        if trigger_phrase.lower() in langchain_response.lower():
-            print("Trigger phrase detected! Executing command...")
-            execute_minecraft_command(minecraft_command)
 
     # Convert the function into a Runnable object
     runnable = RunnableLambda(process_transcribed_text)
