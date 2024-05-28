@@ -7,6 +7,10 @@ from tkinter import ttk
 import threading
 from mcrcon import MCRcon
 import whisper
+from langchain import LangChain
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.memory import ChatMessageHistory
 
 # Initialize the Whisper model
 model = whisper.load_model("base")
@@ -19,6 +23,24 @@ listening = False
 # Function to process audio and detect trigger phrase
 def listen_for_trigger(trigger_phrase, minecraft_command):
     global listening
+
+    # Initialize ChatMessageHistory
+    chat_history = ChatMessageHistory()
+
+    # Define a Runnable to process the transcribed text
+    def process_transcribed_text(text):
+        # Process the transcribed text with LangChain
+        langchain_response = LangChain.process(text)
+        print("LangChain response: " + langchain_response)
+
+        # Check if the trigger phrase is detected
+        if trigger_phrase.lower() in langchain_response.lower():
+            print("Trigger phrase detected! Executing command...")
+            execute_minecraft_command(minecraft_command)
+
+    # Wrap the Runnable with RunnableWithMessageHistory
+    runnable_with_history = RunnableWithMessageHistory(process_transcribed_text, chat_history)
+
     while listening:
         # Capture audio data from the microphone
         print("Microphone is ready. Listening...")
@@ -33,12 +55,10 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
             result = model.transcribe(np.squeeze(audio_data))
             print("You said: " + result['text'])
 
-            # Check if the trigger phrase is detected
-            if trigger_phrase.lower() in result['text'].lower():
-                print("Trigger phrase detected! Executing command...")
-                execute_minecraft_command(minecraft_command)
+            # Process the transcribed text with the RunnableWithMessageHistory
+            runnable_with_history(result['text'])
         except Exception as e:
-            print("An error occurred during transcription:", str(e))
+            print("An error occurred during transcription or LangChain processing:", str(e))
 
 # Function to execute the Minecraft command using mcrcon
 def execute_minecraft_command(command):
