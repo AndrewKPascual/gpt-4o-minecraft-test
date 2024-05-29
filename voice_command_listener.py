@@ -126,10 +126,10 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
 
             # Process the transcribed text with the RunnableWithMessageHistory
             try:
-                print(f"Invoking RunnableWithMessageHistory with text: {result['text']} and config: {{'configurable': {{'session_id': 'default_session'}}}}", flush=True)
+                logging.debug(f"Invoking RunnableWithMessageHistory with text: {result['text']} and config: {{'configurable': {{'session_id': 'default_session'}}}}")
                 kwargs = {"additional_info": "example_value"}  # Example additional keyword arguments
                 response = runnable_with_history.invoke(result['text'], config={"configurable": {"session_id": "default_session"}}, **kwargs)
-                print(f"RunnableWithMessageHistory response: {response}", flush=True)
+                logging.debug(f"RunnableWithMessageHistory response: {response}")
             except ValueError as ve:
                 import traceback
                 logging.error("A ValueError occurred during RunnableWithMessageHistory invocation:")
