@@ -84,6 +84,39 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                     return f"summon {entity}"
                 else:
                     return "Invalid entity type for summoning."
+            elif "set game mode" in transcribed_text.lower():
+                # Extract game mode from the transcribed text
+                if "survival" in transcribed_text.lower():
+                    return "gamemode survival @p"
+                elif "creative" in transcribed_text.lower():
+                    return "gamemode creative @p"
+                elif "adventure" in transcribed_text.lower():
+                    return "gamemode adventure @p"
+                elif "spectator" in transcribed_text.lower():
+                    return "gamemode spectator @p"
+                else:
+                    return "Invalid game mode."
+            elif "set difficulty" in transcribed_text.lower():
+                # Extract difficulty level from the transcribed text
+                if "peaceful" in transcribed_text.lower():
+                    return "difficulty peaceful"
+                elif "easy" in transcribed_text.lower():
+                    return "difficulty easy"
+                elif "normal" in transcribed_text.lower():
+                    return "difficulty normal"
+                elif "hard" in transcribed_text.lower():
+                    return "difficulty hard"
+                else:
+                    return "Invalid difficulty level."
+            elif "give" in transcribed_text.lower():
+                # Extract item and quantity from the transcribed text
+                words = transcribed_text.lower().split()
+                if "give" in words:
+                    index = words.index("give")
+                    if index + 1 < len(words):
+                        item = words[index + 1]
+                        quantity = words[index + 2] if index + 2 < len(words) else "1"
+                        return f"give @p {item} {quantity}"
             # Add more conditions as needed
             else:
                 return ""
