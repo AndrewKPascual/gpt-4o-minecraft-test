@@ -68,6 +68,22 @@ def listen_for_trigger(trigger_phrase, minecraft_command):
                 return "/give @p diamond 1"
             elif "set time day" in transcribed_text.lower():
                 return "time set day"
+            elif "teleport" in transcribed_text.lower():
+                # Extract coordinates from the transcribed text
+                coords = extract_coordinates(transcribed_text)
+                if coords:
+                    return f"tp @p {coords}"
+                else:
+                    return "Invalid coordinates for teleportation."
+            elif "weather clear" in transcribed_text.lower():
+                return "weather clear"
+            elif "summon" in transcribed_text.lower():
+                # Extract entity type from the transcribed text
+                entity = extract_entity_type(transcribed_text)
+                if entity:
+                    return f"summon {entity}"
+                else:
+                    return "Invalid entity type for summoning."
             # Add more conditions as needed
             else:
                 return ""
@@ -161,6 +177,26 @@ def minecraft_command_tool(command: str) -> str:
         return "Connection to the Minecraft server was refused. Please ensure the server is running and accessible."
     except Exception as e:
         return f"An error occurred while executing the command: {str(e)}"
+
+# Function to extract coordinates from the transcribed text
+def extract_coordinates(transcribed_text):
+    import re
+    # Example regex pattern to match coordinates (e.g., "teleport to 100 64 -200")
+    pattern = r"(-?\d+)\s+(-?\d+)\s+(-?\d+)"
+    match = re.search(pattern, transcribed_text)
+    if match:
+        return f"{match.group(1)} {match.group(2)} {match.group(3)}"
+    return None
+
+# Function to extract entity type from the transcribed text
+def extract_entity_type(transcribed_text):
+    # Example logic to extract entity type (e.g., "summon zombie")
+    words = transcribed_text.lower().split()
+    if "summon" in words:
+        index = words.index("summon")
+        if index + 1 < len(words):
+            return words[index + 1]
+    return None
 
 # Function to start the listener
 def start_listener():

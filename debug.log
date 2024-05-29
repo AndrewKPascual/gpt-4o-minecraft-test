@@ -18,3 +18,17 @@
 2024-05-28 20:42:08,931 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
 2024-05-28 21:10:00,192 - DEBUG - Parent run 0c2b5a10-aa11-4a9c-9dd2-6f49f2a40155 not found for run f413507e-94ef-4384-9d62-3e4ef0c718f4. Treating as a root run.
 2024-05-28 21:10:00,259 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
+2024-05-28 22:09:23,986 - DEBUG - Parent run edbd719e-48ac-491f-b65c-5b1bfdaa230a not found for run 66be77be-8a3b-4a26-8967-d916f20f7137. Treating as a root run.
+2024-05-28 22:09:24,053 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
+2024-05-28 22:35:59,391 - DEBUG - Parent run 025fdfb7-9662-4fa2-b31e-72bd39043463 not found for run 8515e199-e349-4cb3-b7b2-1bb915f4e609. Treating as a root run.
+2024-05-28 22:35:59,450 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
+2024-05-28 22:45:56,935 - DEBUG - Parent run b1462310-4145-4b46-9a72-cdadcac7b2a5 not found for run 97198c2a-bf0b-4654-b07d-98e9ff3f66ae. Treating as a root run.
+2024-05-28 22:45:57,014 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
+2024-05-29 00:59:33,701 - DEBUG - Parent run fb11a827-7d51-42e6-a94f-89d5d6c2ea6a not found for run e62a8d19-1aed-4fbf-94bb-f1bbc2885f94. Treating as a root run.
+2024-05-29 00:59:33,798 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
+2024-05-29 01:09:47,744 - DEBUG - Parent run 3d087a2f-d1bd-4093-8716-23a22889f79d not found for run 6a57e21d-8126-4bdf-b491-cac3f865b205. Treating as a root run.
+2024-05-29 01:09:47,788 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
+2024-05-29 01:19:04,824 - DEBUG - Parent run 19b4c7a4-59f3-4287-8fad-266a596dac6f not found for run 3fb34080-252a-4508-9f84-f34728adc09d. Treating as a root run.
+2024-05-29 01:19:04,887 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
+2024-05-29 01:20:00,751 - DEBUG - Parent run 0e3cabc6-28e1-4dcc-86b6-abe6ac2af8a3 not found for run 01261827-509c-436a-961e-e9ff5335b825. Treating as a root run.
+2024-05-29 01:20:00,788 - WARNING - Error in RootListenersTracer.on_chain_end callback: ValueError()
